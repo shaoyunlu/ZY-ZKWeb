@@ -7,6 +7,8 @@ import './style/index.less'
 
 import router from './route'
 
+// 需要注册几个常用的组件
+
 const app = createApp(App)
 app.use(router)
 app.use(register)

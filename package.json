@@ -16,6 +16,7 @@
     "url": "https://github.com/shaoyunlu/ZY-ZKWeb/issues"
   },
   "dependencies": {
+    "axios": "^1.6.7",
     "vue": "^3.2.47",
     "vue-router": "^4.2.2",
     "xiaomeng-dom-util": "^1.0.9",

@@ -1,5 +1,7 @@
 <template>
-    <div class="">hello world</div>
+    <div class="">
+        login vue
+    </div>
 </template>
 
 <script>

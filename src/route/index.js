@@ -1,9 +1,31 @@
 import {createRouter ,createWebHashHistory} from 'vue-router'
 
-import indexVue from 'page/index.vue'
+import loginVue from 'page/login/login.vue'
+import indexVue from 'page/index/index.vue'
+
+import adminVue from 'page/account/admin.vue'
+import userVue from 'page/account/user.vue'
 
 const routes = [
-    { path : '/' ,component : indexVue}
+    {
+        path: '/login',
+        component: loginVue
+    },
+
+    { 
+        path : '/',
+        component : indexVue,
+        children : [
+            {
+                path: 'account/admin',
+                component: adminVue
+            },
+            {
+                path: 'account/user',
+                component: userVue
+            }
+        ]
+    }
 ]
 
 const router = createRouter({

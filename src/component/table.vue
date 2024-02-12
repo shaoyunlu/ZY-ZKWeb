@@ -1,5 +1,5 @@
 <template>
-    <router-view></router-view>
+    <div class=""></div>
 </template>
 
 <script>
@@ -12,4 +12,6 @@ export default defineComponent({
 })
 </script>
 
-<style lang="" scoped></style>
+<style lang="less" scoped>
+    
+</style>

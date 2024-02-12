@@ -1,5 +1,5 @@
 <template>
-    <router-view></router-view>
+    <div class="index-top"></div>
 </template>
 
 <script>
@@ -12,4 +12,9 @@ export default defineComponent({
 })
 </script>
 
-<style lang="" scoped></style>
+<style lang="less" scoped>
+    .index-top{
+        height: 100%;
+        background-color: @level-1-color;
+    }
+</style>
