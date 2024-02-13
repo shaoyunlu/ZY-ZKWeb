@@ -12,7 +12,8 @@ export default defineConfig({
       'comp': resolve(__dirname, 'src/component'),
       'util': resolve(__dirname, 'src/util'),
       'style': resolve(__dirname, 'src/style')
-    }
+    },
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
   },
   plugins: [
     vue(),

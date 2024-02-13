@@ -7,15 +7,17 @@
             <c-left></c-left>
         </template>
         <template #right>
-            <router-view></router-view>
+            <div class="index-right">
+                <router-view></router-view>
+            </div>
         </template>
     </xmv-layout>
 </template>
 
 <script>
 import {defineComponent} from 'vue'
-import cLeft from './c_left.vue'
-import cTop from './c_top.vue'
+import cLeft from './c_left'
+import cTop from './c_top'
 export default defineComponent({
     name:"",
     components : {cLeft,cTop},
@@ -25,4 +27,9 @@ export default defineComponent({
 })
 </script>
 
-<style lang="" scoped></style>
+<style lang="less" scoped>
+    .index-right{
+        height: 100%;
+        padding: 10px;
+    }
+</style>
