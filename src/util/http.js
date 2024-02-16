@@ -29,7 +29,7 @@ http.interceptors.response.use(
     const data = response.data;
     // 这里根据后端返回的数据结构来进行调整
     if(data.success) {
-      return data.data.payLoad; // 只返回需要的数据
+      return data.payLoad; // 只返回需要的数据
     } else {
       // 你可以在这里处理错误，或者抛出错误让catch语句捕获
       return Promise.reject(new Error(data.message || 'Error'));

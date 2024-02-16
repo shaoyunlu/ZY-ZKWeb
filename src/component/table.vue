@@ -34,10 +34,10 @@ export default defineComponent({
         const pageSizeMode = ref(10)
 
         const handleChangeNumber = ()=>{
-            fetchData()
+            __fetchData()
         }
 
-        const fetchData = ()=>{
+        const __fetchData = ()=>{
             loading.value = true
             isPaginationShow.value = false
             let pageInfo = paginationRef.value.getPageInfo()
@@ -54,12 +54,16 @@ export default defineComponent({
             })
         }
 
+        const refresh = ()=>{
+            __fetchData()
+        }
+
         onMounted(()=>{
-            fetchData()
+            __fetchData()
         })
 
-        return {pageSizeMode,total,tableData,
-                handleChangeNumber,paginationRef,isPaginationShow,loading}
+        return {pageSizeMode,total,tableData,paginationRef,isPaginationShow,loading,
+                handleChangeNumber,refresh}
     }
 })
 </script>
