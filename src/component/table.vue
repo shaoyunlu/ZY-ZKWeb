@@ -1,5 +1,5 @@
 <template>
-    <xmv-table :data="tableData" v-loading="loading">
+    <xmv-table :data="tableData" v-loading="loading" ref="xmvTableRef">
         <slot></slot>
     </xmv-table>
     <div class="zy-table-divider"></div>
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import {defineComponent,ref,onMounted} from 'vue'
+import {defineComponent,ref,onMounted, nextTick} from 'vue'
 import {isEmpty} from 'util/data'
 import http from 'util/http'
 export default defineComponent({
@@ -23,6 +23,8 @@ export default defineComponent({
         url : String
     },
     setup(props ,context) {
+
+        const xmvTableRef = ref(null)
 
         const loading = ref(false)
         const paginationRef = ref(null)
@@ -63,6 +65,7 @@ export default defineComponent({
         })
 
         return {pageSizeMode,total,tableData,paginationRef,isPaginationShow,loading,
+                xmvTableRef,
                 handleChangeNumber,refresh}
     }
 })

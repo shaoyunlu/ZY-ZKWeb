@@ -2,18 +2,22 @@
     <div class="zy-hor-tools">
         <div class="__left">
             <xmv-button type="primary" @click="handleAdd">新增</xmv-button>
+            <xmv-button>批量删除</xmv-button>
         </div>
         <div class="__right">
-            <xmv-button>查询</xmv-button>
+            <xmv-input suffix-icon="search" placeholder="搜索"></xmv-input>
         </div>
     </div>
     <div>
         <zy-table url="account/admin/list" ref="tableRef">
+            <xmv-table-column type="checkbox" width="55" />
             <xmv-table-column prop="name" label="姓名" />
             <xmv-table-column prop="age" label="年龄" />
             <xmv-table-column prop="gender" label="性别" />
             <xmv-table-column prop="" label="操作">
                 <template #default="{props}">
+                    <xmv-button link type="primary" size="small"
+                        @click="handleDelete(props.data)">审核</xmv-button>
                     <xmv-button link type="primary" size="small"
                         @click="handleDelete(props.data)">删除</xmv-button>
                 </template>
@@ -77,7 +81,7 @@ export default defineComponent({
         }
 
         const handleDelete = ()=>{
-            console.log('delelte')
+            console.log(tableRef.value.xmvTableRef.data)
         }
 
         const __formSubmit = ()=>{
