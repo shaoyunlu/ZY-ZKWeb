@@ -2,10 +2,10 @@
     <div class="zy-hor-tools">
         <div class="__left">
             <xmv-button type="primary" @click="handleAdd">新增</xmv-button>
-            <xmv-button>批量删除</xmv-button>
+            <xmv-button @click="handleBatchDelete">批量删除</xmv-button>
         </div>
         <div class="__right">
-            <xmv-input suffix-icon="search" placeholder="搜索"></xmv-input>
+            <xmv-input suffix-icon="search" placeholder="搜索" @iconClick="handleSearch"></xmv-input>
         </div>
     </div>
     <div>
@@ -13,11 +13,20 @@
             <xmv-table-column type="checkbox" width="55" />
             <xmv-table-column prop="name" label="姓名" />
             <xmv-table-column prop="age" label="年龄" />
-            <xmv-table-column prop="gender" label="性别" />
+            <xmv-table-column prop="gender" label="性别">
+                <template #default="{props}">
+                    <span>{{ props.data.gender == '1' ? '男' : '女' }}</span>
+                </template>
+            </xmv-table-column>
+            <xmv-table-column prop="status" label="账号状态">
+                <template #default="{props}">
+                    <span :class="computeTableStatus(props.data.status)">{{ statusMapping[props.data.status].text }}</span>
+                </template>
+            </xmv-table-column>
             <xmv-table-column prop="" label="操作">
                 <template #default="{props}">
                     <xmv-button link type="primary" size="small"
-                        @click="handleDelete(props.data)">审核</xmv-button>
+                        @click="handleDelete(props.data)">禁止</xmv-button>
                     <xmv-button link type="primary" size="small"
                         @click="handleDelete(props.data)">删除</xmv-button>
                 </template>
@@ -52,8 +61,9 @@
 
 <script>
 import {defineComponent,ref,reactive} from 'vue'
-import {loadingOpen,loadingClose,message} from 'util/dom'
+import {loadingOpen,loadingClose,messageDialog,confirmDialog} from 'util/dom'
 import http from 'util/http'
+import {isEmpty} from 'util/data'
 export default defineComponent({
     name:"",
     setup(props ,context) {
@@ -62,6 +72,12 @@ export default defineComponent({
 
         const formRef = ref(null)
         const tableRef = ref(null)
+
+        const statusMapping = {
+            1 :  {text : '正常'},
+            2 :  {text : '禁止'},
+            3 :  {text : '待审核'}
+        }
 
         const dialogFormVisible = ref(false)
         const form = reactive({
@@ -80,8 +96,24 @@ export default defineComponent({
             dialogFormVisible.value = true
         }
 
-        const handleDelete = ()=>{
-            console.log(tableRef.value.xmvTableRef.data)
+        const handleDelete = (rowData)=>{
+            confirmDialog('确认要删除么？',()=>{
+                console.dir(rowData)
+            })
+        }
+
+        const handleBatchDelete = ()=>{
+            let data = tableRef.value.getSelectedData()
+            if (data.length == 0){
+                messageDialog('请至少选择一条记录。' ,'info')
+            }else{
+                console.log(data)
+            }
+        }
+
+        const handleSearch = (val)=>{
+            console.log(val)
+            tableRef.value.fetchData()
         }
 
         const __formSubmit = ()=>{
@@ -89,7 +121,7 @@ export default defineComponent({
             http.post('account/admin/add' ,form).then(res=>{
                 loadingClose()
                 dialogFormVisible.value = false
-                message()
+                messageDialog()
                 tableRef.value.refresh()
             })
         }
@@ -102,9 +134,17 @@ export default defineComponent({
             })
         }
 
+        const test = ()=>{
+            return '123'
+        }
+
+        const computeTableStatus = ()=>{
+            return '123'
+        }
+
         return {tableData,total,dialogFormVisible,form,rules,formRef,
-                tableRef,
-                handleDelete,handleAdd,handleDialogEnter}
+                tableRef,statusMapping,
+                handleDelete,handleAdd,handleDialogEnter,handleSearch,handleBatchDelete,computeTableStatus}
     }
 })
 </script>

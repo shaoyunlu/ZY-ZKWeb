@@ -1,9 +1,9 @@
 <template>
-    <xmv-table :data="tableData" v-loading="loading" ref="xmvTableRef">
-        <slot></slot>
-    </xmv-table>
-    <div class="zy-table-divider"></div>
-    <div v-show="isPaginationShow">
+    <div class="zy-table">
+        <xmv-table :data="tableData" ref="xmvTableRef" v-loading="loading">
+            <slot></slot>
+        </xmv-table>
+        <div class="zy-table-divider"></div>
         <xmv-pagination 
                 ref="paginationRef"
                 :total="total" 
@@ -28,7 +28,6 @@ export default defineComponent({
 
         const loading = ref(false)
         const paginationRef = ref(null)
-        const isPaginationShow = ref(false)
 
         const total = ref(0)
         const tableData = ref([])
@@ -36,12 +35,12 @@ export default defineComponent({
         const pageSizeMode = ref(10)
 
         const handleChangeNumber = ()=>{
-            __fetchData()
+            fetchData(false)
         }
 
-        const __fetchData = ()=>{
+        const fetchData = (hidePageer = true)=>{
+            hidePageer && (total.value = 0)
             loading.value = true
-            isPaginationShow.value = false
             let pageInfo = paginationRef.value.getPageInfo()
             http.get(props.url ,{
                 params : {
@@ -49,29 +48,36 @@ export default defineComponent({
                     pageSize : pageInfo.pageSize
                 }
             }).then(data=>{
-                isPaginationShow.value = !isEmpty(data.list)
                 loading.value = false
                 tableData.value = data.list
                 total.value = data.total
             })
         }
 
+        const getSelectedData = ()=>{
+            let data = xmvTableRef.value.data
+            return data.filter((tmp=>tmp.checked))
+        }
+
         const refresh = ()=>{
-            __fetchData()
+            fetchData()
         }
 
         onMounted(()=>{
-            __fetchData()
+            fetchData()
         })
 
-        return {pageSizeMode,total,tableData,paginationRef,isPaginationShow,loading,
+        return {pageSizeMode,total,tableData,paginationRef,loading,
                 xmvTableRef,
-                handleChangeNumber,refresh}
+                handleChangeNumber,refresh,fetchData,getSelectedData}
     }
 })
 </script>
 
 <style lang="less">
+    .zy-table{
+        position: relative;
+    }
     .zy-table-divider{
         height: 10px;
     }
