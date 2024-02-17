@@ -38,8 +38,8 @@ export default defineComponent({
             fetchData(false)
         }
 
-        const fetchData = (hidePageer = true)=>{
-            hidePageer && (total.value = 0)
+        const fetchData = (hidepager = true)=>{
+            hidepager && (total.value = 0)
             loading.value = true
             let pageInfo = paginationRef.value.getPageInfo()
             http.get(props.url ,{

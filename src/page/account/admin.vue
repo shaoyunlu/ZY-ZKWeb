@@ -11,29 +11,35 @@
     <div>
         <zy-table url="account/admin/list" ref="tableRef">
             <xmv-table-column type="checkbox" width="55" />
-            <xmv-table-column prop="name" label="姓名" />
+            <xmv-table-column prop="name" label="姓名">
+                <template #default="{props}">
+                    <span @click="handleDetail(props.data)" class="admin-table-col-name">{{ props.data.name }}</span>
+                </template>
+            </xmv-table-column>
             <xmv-table-column prop="age" label="年龄" />
             <xmv-table-column prop="gender" label="性别">
                 <template #default="{props}">
                     <span>{{ props.data.gender == '1' ? '男' : '女' }}</span>
                 </template>
             </xmv-table-column>
-            <xmv-table-column prop="status" label="账号状态">
+            <xmv-table-column prop="status" label="账号状态" sortable>
                 <template #default="{props}">
                     <span :class="computeTableStatus(props.data.status)">{{ statusMapping[props.data.status].text }}</span>
                 </template>
             </xmv-table-column>
             <xmv-table-column prop="" label="操作">
                 <template #default="{props}">
-                    <xmv-button link type="primary" size="small"
-                        @click="handleDelete(props.data)">禁止</xmv-button>
-                    <xmv-button link type="primary" size="small"
+                    <xmv-button link type="primary" size="small" class="admin-op-audit" :class="computeTableStatus(props.data.status)"
+                        @click="handleDelete(props.data)">审核</xmv-button>
+                    <xmv-button link type="primary" size="small" class="admin-op-forbid" :class="computeTableStatus(props.data.status)"
+                        @click="handleDelete(props.data)">{{ props.data.status == 2 ? '正常' : '禁止' }}</xmv-button>
+                    <xmv-button link type="primary" size="small" class="admin-op-delete" :class="computeTableStatus(props.data.status)"
                         @click="handleDelete(props.data)">删除</xmv-button>
                 </template>
             </xmv-table-column>
         </zy-table>
     </div>
-    <xmv-dialog v-model="dialogFormVisible" title="管理员编辑">
+    <xmv-dialog v-model="dialogFormVisible" title="编辑" width="550px">
         <xmv-form ref="formRef" :mode="form" label-width="100px" :rules="rules" class="zy-dialog-form">
             <xmv-form-item label="姓名" prop="name">
                 <xmv-input v-model="form.name" autocomplete="off" />
@@ -57,6 +63,27 @@
                 </span>
             </template>
     </xmv-dialog>
+
+    <xmv-dialog v-model="dialogDetailVisible" title="详情" width="550px">
+        <div class="zy-dialog">
+            <xmv-row>
+                <xmv-col :span="8">姓名</xmv-col>
+                <xmv-col :span="6">{{ detailDataRef.name }}</xmv-col>
+            </xmv-row>
+            <xmv-row>
+                <xmv-col :span="8">年龄</xmv-col>
+                <xmv-col :span="6">{{ detailDataRef.age }}</xmv-col>
+            </xmv-row>
+            <xmv-row>
+                <xmv-col :span="8">性别</xmv-col>
+                <xmv-col :span="6">{{ genderMapping[detailDataRef.gender] && genderMapping[detailDataRef.gender].text }}</xmv-col>
+            </xmv-row>
+            <xmv-row>
+                <xmv-col :span="8">更新时间</xmv-col>
+                <xmv-col :span="6">{{ detailDataRef.updateTime }}</xmv-col>
+            </xmv-row>
+        </div>
+    </xmv-dialog>
 </template>
 
 <script>
@@ -73,13 +100,20 @@ export default defineComponent({
         const formRef = ref(null)
         const tableRef = ref(null)
 
+        const genderMapping = {
+            1 : {text : '男'},
+            2 : {text : '女'}
+        }
+
         const statusMapping = {
-            1 :  {text : '正常'},
-            2 :  {text : '禁止'},
-            3 :  {text : '待审核'}
+            1 :  {text : '正常' ,className : 'admin-status-normal'},
+            2 :  {text : '禁止' ,className : 'admin-status-forbidden'},
+            3 :  {text : '待审核' ,className : 'admin-status-toAudit'}
         }
 
         const dialogFormVisible = ref(false)
+        const dialogDetailVisible = ref(false)
+        const detailDataRef = ref({})
         const form = reactive({
             name : '',
             age : '',
@@ -134,19 +168,49 @@ export default defineComponent({
             })
         }
 
-        const test = ()=>{
-            return '123'
+        const handleDetail = (rowData)=>{
+            detailDataRef.value = rowData
+            dialogDetailVisible.value = true
         }
 
-        const computeTableStatus = ()=>{
-            return '123'
+        const computeTableStatus = (status)=>{
+            return statusMapping[status].className
         }
 
         return {tableData,total,dialogFormVisible,form,rules,formRef,
-                tableRef,statusMapping,
-                handleDelete,handleAdd,handleDialogEnter,handleSearch,handleBatchDelete,computeTableStatus}
+                tableRef,statusMapping,dialogDetailVisible,detailDataRef,genderMapping,
+                handleDelete,handleAdd,handleDialogEnter,handleSearch,handleBatchDelete,computeTableStatus,
+                handleDetail}
     }
 })
 </script>
 
-<style lang="" scoped></style>
+<style lang="less" scoped>
+    span.admin-status-toAudit{
+        color : gray;
+    }
+    span.admin-status-forbidden{
+        color : red;
+    }
+    span.admin-status-normal{
+        color : green;
+    }
+
+    .admin-op-audit{
+        color: gray;
+        &:hover{
+            color: gray;
+        }
+        &.admin-status-toAudit{
+            color: #409eff;
+            &:hover{
+                opacity: 0.7;
+            }
+        }
+    }
+
+    .admin-table-col-name{
+        color: #409eff;
+        cursor: pointer;
+    }
+</style>

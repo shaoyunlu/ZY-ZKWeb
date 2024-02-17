@@ -6,6 +6,9 @@ import indexVue from 'page/index/index.vue'
 import adminVue from 'page/account/admin.vue'
 import userVue from 'page/account/user.vue'
 
+import systemVue from 'page/base/system.vue'
+import carouselVue from 'page/base/carousel.vue'
+
 const routes = [
     {
         path: '/login',
@@ -23,6 +26,14 @@ const routes = [
             {
                 path: 'account/user',
                 component: userVue
+            },
+            {
+                path: 'base/system',
+                component: systemVue
+            },
+            {
+                path: 'base/carousel',
+                component: carouselVue
             }
         ]
     }

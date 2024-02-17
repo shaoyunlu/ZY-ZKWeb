@@ -20,13 +20,12 @@
     "vue": "^3.2.47",
     "vue-router": "^4.2.2",
     "xiaomeng-dom-util": "^1.0.9",
-    "xiaomeng-vue-ui": "^0.2.66"
+    "xiaomeng-vue-ui": "^0.2.68"
   },
   "devDependencies": {
     "@vitejs/plugin-legacy": "^4.0.2",
     "@vitejs/plugin-vue": "^4.0.0",
     "less": "^4.1.3",
-    "nodemon": "^3.0.1",
     "vite": "^4.1.1"
   },
   "homepage": "https://github.com/shaoyunlu/ZY-ZKWeb#readme"
