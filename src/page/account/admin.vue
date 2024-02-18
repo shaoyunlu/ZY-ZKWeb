@@ -55,13 +55,13 @@
             </xmv-form-item>
         </xmv-form>
         <template #footer>
-                <span class="dialog-footer">
-                    <xmv-button @click="dialogFormVisible = false">取消</xmv-button>
-                    <xmv-button type="primary" @click="handleDialogEnter">
-                        确认
-                    </xmv-button>
-                </span>
-            </template>
+            <span class="dialog-footer">
+                <xmv-button @click="dialogFormVisible = false">取消</xmv-button>
+                <xmv-button type="primary" @click="handleDialogEnter">
+                    确认
+                </xmv-button>
+            </span>
+        </template>
     </xmv-dialog>
 
     <xmv-dialog v-model="dialogDetailVisible" title="详情" width="550px">
@@ -90,7 +90,6 @@
 import {defineComponent,ref,reactive} from 'vue'
 import {loadingOpen,loadingClose,messageDialog,confirmDialog} from 'util/dom'
 import http from 'util/http'
-import {isEmpty} from 'util/data'
 export default defineComponent({
     name:"",
     setup(props ,context) {
@@ -163,8 +162,6 @@ export default defineComponent({
         const handleDialogEnter = ()=>{
             formRef.value.validate().then(()=>{
                 __formSubmit()
-            }).catch(msg=>{
-                loadingClose()
             })
         }
 
