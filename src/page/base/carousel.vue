@@ -1,10 +1,10 @@
 <template>
 
-  <div>
+  <div class="carousel-upload">
       <xmv-upload :file-list="fileList" drag :limit="1">
           <xmv-icon name="uploadFilled" class="xmv-icon--upload"></xmv-icon>
           <div class="xmv-upload__text">
-              点击上传系统 logo 
+              点击上传轮播图
           </div>
       </xmv-upload>
   </div>
@@ -30,6 +30,7 @@ export default defineComponent({
   },
   setup() {
     const items = ref([]);
+    const fileList = ref([])
 
    const dragOptions = computed(()=>{
       return {
@@ -52,12 +53,12 @@ export default defineComponent({
       fetchData()
    })
 
-    return { items ,dragOptions };
+    return { items ,dragOptions ,fileList};
   },
 });
 </script>
 
-<style>
+<style lang="less">
   .flex-container {
     flex-direction: row;
     list-style: none;
@@ -67,10 +68,9 @@ export default defineComponent({
 
   .flex-item {
     transition: transform 0.3s ease;
-    width: 320px;
-    height: 180px;
+    width: 180px;
+    height: 320px;
     margin: 5px;
-    padding: 10px;
     background-color: #f2f2f2;
     border: 1px solid #ccc;
     cursor: grab;
@@ -80,5 +80,12 @@ export default defineComponent({
   /* Optional: Add additional styles for dragging state */
   .flex-item.dragging {
     opacity: 0.6;
+  }
+
+  .carousel-upload{
+    width : 180px;
+    .xmv-upload-list{
+      display: none;
+    }
   }
 </style>
