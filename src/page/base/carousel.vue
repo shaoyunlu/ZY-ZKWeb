@@ -1,7 +1,7 @@
 <template>
 
   <div class="carousel-upload">
-      <xmv-upload :file-list="fileList" drag :limit="1">
+      <xmv-upload :file-list="fileList" drag :limit="1" @uploadDone="handleUploadDone">
           <xmv-icon name="uploadFilled" class="xmv-icon--upload"></xmv-icon>
           <div class="xmv-upload__text">
               点击上传轮播图
@@ -20,7 +20,7 @@
 
 <script>
 import { computed, defineComponent, onMounted, ref } from 'vue'
-import {loadingOpen,loadingClose,messageDialog,confirmDialog} from 'util/dom'
+import {loadingOpen,loadingClose} from 'util/dom'
 import draggable from 'vuedraggable'
 import http from 'util/http'
 
@@ -49,11 +49,35 @@ export default defineComponent({
       })
    }
 
+   const handleUploadDone = (formFileList)=>{
+      let formFile = formFileList[0]
+      __addPic(formFile)
+   }
+
+   const __addPic = (formFile)=>{
+      const formData = new FormData()
+      formData.append('image' ,file)
+
+      http.post('pic/upload' ,formData ,{
+        headers : {'Content-Type' : 'multipart/form-data'}
+      }).then(res=>{
+        console.log(res)
+      })
+   }
+
+   const __adjustOrder = ()=>{
+
+   }
+
+   const __delPic = ()=>{
+
+   }
+
    onMounted(()=>{
       fetchData()
    })
 
-    return { items ,dragOptions ,fileList};
+    return { items ,dragOptions ,fileList ,handleUploadDone};
   },
 });
 </script>
