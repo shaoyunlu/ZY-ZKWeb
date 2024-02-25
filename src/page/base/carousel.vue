@@ -13,7 +13,7 @@
       <div class="flex-item" :key="element.id">
         <xmv-image :src="element.url"></xmv-image>
         <div class="flex-item-mask">
-          <xmv-button @click="handleItemDelete">删除</xmv-button>
+          <xmv-button @click="handleItemDelete(element)">删除</xmv-button>
         </div>
       </div>
     </template>
@@ -22,7 +22,7 @@
 
 <script>
 import { computed, defineComponent, onMounted, ref } from 'vue'
-import { loadingOpen, loadingClose } from 'util/dom'
+import { loadingOpen, loadingClose, messageDialog, confirmDialog } from 'util/dom'
 import draggable from 'vuedraggable'
 import http from 'util/http'
 
@@ -56,15 +56,14 @@ export default defineComponent({
       __addPic(formFile)
     }
 
-    const handleDragEnd = ()=>{
-      loadingOpen()
-      http.post('base/carousel/order/adjust' ,items.value).then(res=>{
-        loadingClose()
-      })
+    const handleDragEnd = () => {
+      __adjustOrder()
     }
 
-    const handleItemDelete = ()=>{
-      console.log(1)
+    const handleItemDelete = (item) => {
+      confirmDialog('确认要删除么？', () => {
+        __delPic(item)
+      })
     }
 
     const __addPic = (formFile) => {
@@ -75,25 +74,33 @@ export default defineComponent({
         headers: { 'Content-Type': 'multipart/form-data' }
       }).then(res => {
         loadingClose()
-        items.value.push({ id: res.is, url: res.url, order: res.order })
+        items.value.push({ id: res.is, url: res.url })
       }).catch(err => {
         loadingClose()
       })
     }
 
     const __adjustOrder = () => {
-
+      loadingOpen()
+      http.post('base/carousel/order/adjust', items.value).then(res => {
+        loadingClose()
+      })
     }
 
-    const __delPic = () => {
-
+    const __delPic = (item) => {
+      loadingOpen()
+      http.post('base/carousel/pic/delete', { id: item.id }).then(res => {
+        loadingClose()
+        messageDialog()
+        items.value = items.value.filter(tmp => tmp.id !== item.id)
+      })
     }
 
     onMounted(() => {
       fetchData()
     })
 
-    return { items, dragOptions, fileList, handleUploadDone ,handleDragEnd ,handleItemDelete};
+    return { items, dragOptions, fileList, handleUploadDone, handleDragEnd, handleItemDelete };
   },
 });
 </script>
@@ -106,11 +113,11 @@ export default defineComponent({
   margin: 0;
 }
 
-.flex-item-mask{
+.flex-item-mask {
   position: absolute;
   left: 0;
   top: 0;
-  width : 100%;
+  width: 100%;
   height: 100%;
   opacity: 0;
 }
@@ -127,9 +134,9 @@ export default defineComponent({
   float: left;
 }
 
-.flex-item:hover .flex-item-mask{
+.flex-item:hover .flex-item-mask {
   opacity: 1;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 /* Optional: Add additional styles for dragging state */

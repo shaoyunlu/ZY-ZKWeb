@@ -9,6 +9,8 @@ import userVue from 'page/account/user.vue'
 import systemVue from 'page/base/system.vue'
 import carouselVue from 'page/base/carousel.vue'
 
+import newsVue from 'page/news/index.vue'
+
 const routes = [
     {
         path: '/login',
@@ -34,6 +36,10 @@ const routes = [
             {
                 path: 'base/carousel',
                 component: carouselVue
+            },
+            {
+                path: 'news',
+                component: newsVue
             }
         ]
     }
