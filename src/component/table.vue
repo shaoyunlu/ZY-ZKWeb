@@ -20,7 +20,8 @@ import http from 'util/http'
 export default defineComponent({
     name:"",
     props:{
-        url : String
+        url : String,
+        lazy : {type : Boolean ,default : false}
     },
     setup(props ,context) {
 
@@ -64,7 +65,9 @@ export default defineComponent({
         }
 
         onMounted(()=>{
-            fetchData()
+            if (!props.lazy){
+                fetchData()
+            }
         })
 
         return {pageSizeMode,total,tableData,paginationRef,loading,
