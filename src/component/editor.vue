@@ -42,8 +42,12 @@ export default defineComponent({
         const editorConfig = {
             MENU_CONF : {
                 uploadImage : {
-                    server: '/api/upload',
+                    server: 'http://127.0.0.1:3100/web/editor/pic/upload',
                     fieldName: 'image'
+                },
+                uploadVideo : {
+                    server: 'http://127.0.0.1:3100/web/editor/video/upload',
+                    fieldName: 'video'
                 }
             }
         }
@@ -57,12 +61,7 @@ export default defineComponent({
 
         const handleCreated = (editor) => {
             editorRef.value = editor // 记录 editor 实例，重要！
-            console.log(editor)
         }
-
-        onMounted(()=>{
-
-        })
 
         return {editorRef,
                 valueHtml,

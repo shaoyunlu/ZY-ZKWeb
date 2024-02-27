@@ -21,13 +21,13 @@
         </template>
         <template #default>
         <div>
-            <c-editor></c-editor>
+            <c-editor ref="editorRef"></c-editor>
         </div>
         </template>
         <template #footer>
         <div style="flex: auto">
             <xmv-button>取消</xmv-button>
-            <xmv-button type="primary">确认</xmv-button>
+            <xmv-button type="primary" @click="handleEnter">确认</xmv-button>
         </div>
         </template>
     </xmv-drawer>
@@ -44,6 +44,8 @@ export default defineComponent({
         const tableRef = ref(null)
         const drawer = ref(false)
         const wrapTableRef = ref(false)
+        const editorRef = ref(null)
+
         const {$on ,$emit} = inject('EventBus')
 
         const handleAdd = ()=>{
@@ -55,7 +57,12 @@ export default defineComponent({
             tableRef.value.fetchData()
         })
 
-        return {tableRef ,drawer ,wrapTableRef ,handleAdd}
+        const handleEnter = ()=>{
+            let htmlStr = editorRef.value.editorRef.getHtml()
+            console.log(htmlStr)
+        }
+
+        return {tableRef ,drawer ,wrapTableRef ,editorRef ,handleAdd,handleEnter}
     }
 })
 </script>
