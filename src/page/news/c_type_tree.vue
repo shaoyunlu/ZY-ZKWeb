@@ -77,7 +77,8 @@ export default defineComponent({
             })
         })
 
-        return {treeRef,data,handleDelete,handleAdd,handleNodeClick}
+        return {treeRef,data,
+                handleDelete,handleAdd,handleNodeClick}
     }
 })
 </script>

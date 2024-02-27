@@ -1,5 +1,5 @@
 <template>
-    <div class="zy-table">
+    <div class="zy-table" ref="tableRef">
         <xmv-table :data="tableData" ref="xmvTableRef" v-loading="loading">
             <slot></slot>
         </xmv-table>
@@ -26,6 +26,7 @@ export default defineComponent({
     setup(props ,context) {
 
         const xmvTableRef = ref(null)
+        const tableRef = ref(null)
 
         const loading = ref(false)
         const paginationRef = ref(null)
@@ -71,7 +72,7 @@ export default defineComponent({
         })
 
         return {pageSizeMode,total,tableData,paginationRef,loading,
-                xmvTableRef,
+                xmvTableRef,tableRef,
                 handleChangeNumber,refresh,fetchData,getSelectedData}
     }
 })
