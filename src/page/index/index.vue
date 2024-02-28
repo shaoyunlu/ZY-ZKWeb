@@ -4,7 +4,9 @@
             <c-top></c-top>
         </template>
         <template #left>
-            <c-left></c-left>
+            <div class="index-left">
+                <c-left></c-left>
+            </div>
         </template>
         <template #right>
             <div class="index-right">
@@ -28,6 +30,10 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+    .index-left{
+        height: 100%;
+        border-right: 1px solid #ddd;
+    }
     .index-right{
         height: 100%;
         padding: 10px;

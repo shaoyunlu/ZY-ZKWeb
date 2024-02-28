@@ -1,7 +1,9 @@
 <template>
     <div class="news-type-tree">
-        <div>
-            <xmv-button @click="handleAdd">新增</xmv-button>
+        <div style="margin-bottom: 25px;">
+            <xmv-button @click="handleAdd">
+                <xmv-icon name="plus"></xmv-icon>
+            </xmv-button>
         </div>
         <xmv-tree :data="data" ref="treeRef" @nodeClick="handleNodeClick">
             <template #default="{node}">

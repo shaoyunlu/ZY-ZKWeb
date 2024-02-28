@@ -1,12 +1,16 @@
 <template>
-    <xmv-layout headHval="0" lWval="100px" mode="t_lr">
-        <template #left>
-            <c-type-tree></c-type-tree>
-        </template>
-        <template #right>
-            <c-list></c-list>
-        </template>
-    </xmv-layout>
+    <div class="zk-news">
+        <xmv-layout headHval="0" lWval="150px" mode="t_lr">
+            <template #left>
+                <div>
+                    <c-type-tree></c-type-tree>
+                </div>
+            </template>
+            <template #right>
+                <c-list></c-list>
+            </template>
+        </xmv-layout>
+    </div>
 </template>
 
 <script>
