@@ -44,15 +44,16 @@
             <xmv-form-item label="姓名" prop="name">
                 <xmv-input v-model="form.name" autocomplete="off" />
             </xmv-form-item>
-            <xmv-form-item label="年龄" prop="age">
-                <xmv-input-number v-model="form.age"></xmv-input-number>
+            <xmv-form-item label="密码" prop="password">
+                <xmv-input v-model="form.password"></xmv-input>
             </xmv-form-item>
-            <xmv-form-item label="性别" prop="gender">
-                <xmv-radio-group v-model="form.gender">
-                    <xmv-radio label="male">男</xmv-radio>
-                    <xmv-radio label="female">女</xmv-radio>
-                </xmv-radio-group>
+            <xmv-form-item label="邮箱" prop="email">
+                <xmv-input v-model="form.email"></xmv-input>
             </xmv-form-item>
+            <xmv-form-item label="电话" prop="phone">
+                <xmv-input v-model="form.phone"></xmv-input>
+            </xmv-form-item>
+
         </xmv-form>
         <template #footer>
             <span class="dialog-footer">
@@ -115,14 +116,16 @@ export default defineComponent({
         const detailDataRef = ref({})
         const form = reactive({
             name : '',
-            age : '',
-            gender : ''
+            password : '',
+            email : '',
+            phone : ''
         })
 
         const rules = reactive({
             name : [{required : true}],
-            age : [{required : true}],
-            gender : [{required : true}]
+            password : [{required : true}],
+            email : [],
+            phone : []
         })
 
         const handleAdd = ()=>{
@@ -151,7 +154,7 @@ export default defineComponent({
 
         const __formSubmit = ()=>{
             loadingOpen()
-            http.post('account/admin/add' ,form).then(res=>{
+            http.post('http://127.0.0.1:8080/account/admin/add' ,form).then(res=>{
                 loadingClose()
                 dialogFormVisible.value = false
                 messageDialog()
