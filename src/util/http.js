@@ -3,8 +3,8 @@ import axios from 'axios';
 
 // 创建axios实例
 const http = axios.create({
-  baseURL: 'http://localhost:3100/web',
-  //baseURL: 'http://114.116.50.8:3100/web',
+  //baseURL: 'http://localhost:3100/web',
+  baseURL: 'http://localhost:8080/',
   timeout: 10000, // 请求超时时间
   // 可以添加更多配置
 });

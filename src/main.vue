@@ -3,10 +3,20 @@
 </template>
 
 <script>
-import {defineComponent} from 'vue'
+import {defineComponent,onMounted} from 'vue'
+import {useRouter} from 'vue-router'
+
 export default defineComponent({
     name:"",
     setup(props ,context) {
+
+        const router = useRouter()
+
+        // 需要先验证 token 是否有效
+
+        onMounted(()=>{
+            router.push('/login')
+        })
         return {}
     }
 })
