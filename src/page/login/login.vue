@@ -21,12 +21,11 @@
 </template>
 
 <script>
-import {defineComponent, reactive ,ref} from 'vue'
-import http from 'util/http'
+import {defineComponent, onMounted, reactive ,ref} from 'vue'
+import {blobHttp} from 'util/http'
 export default defineComponent({
     name:"",
     setup(props ,context) {
-
         const formRef = ref(null)
 
         const formMode = reactive({
@@ -41,18 +40,29 @@ export default defineComponent({
             validateNum : [{required : true}]
         })
 
-        const captchaUrl = 'http://127.0.0.1:8080/captcha'
-        const srcRef = ref(captchaUrl)
+
+        const srcRef = ref('')
         const handleImgClick = ()=>{
-            srcRef.value = captchaUrl + '?time=' + new Date().getTime()
+            createCaptcha()
         }
         const handleFormClick = ()=>{
             formRef.value.validate().then(()=>{
                 http.post('login' ,formMode).then(data=>{
-
+                    
                 })
             })
         }
+
+        const createCaptcha = ()=>{
+            blobHttp.get('captcha').then((data)=>{
+                const url = URL.createObjectURL(data.data)
+                srcRef.value = url
+            })
+        }
+
+        onMounted(()=>{
+            createCaptcha()
+        })
 
         return {formRef ,formMode ,formRule ,srcRef ,
                 handleImgClick ,handleFormClick}

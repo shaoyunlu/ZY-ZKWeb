@@ -5,9 +5,15 @@ import axios from 'axios';
 const http = axios.create({
   //baseURL: 'http://localhost:3100/web',
   baseURL: 'http://localhost:8080/',
-  timeout: 10000, // 请求超时时间
-  // 可以添加更多配置
+  timeout: 10000,
+  withCredentials: true
 });
+
+const blobHttp = axios.create({
+  baseURL: 'http://localhost:8080/',
+  withCredentials: true,
+  responseType: 'blob' // 重要：设置响应类型为blob以接收二进制数据
+})
 
 // 请求拦截器
 http.interceptors.request.use(
@@ -44,4 +50,5 @@ http.interceptors.response.use(
   }
 );
 
-export default http;
+export default http
+export {blobHttp}
