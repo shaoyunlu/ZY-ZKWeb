@@ -22,16 +22,18 @@
 
 <script>
 import {defineComponent, onMounted, reactive ,ref} from 'vue'
+import http from 'util/http'
 import {blobHttp} from 'util/http'
+import {loadingOpen,loadingClose,messageDialog} from 'util/dom'
 export default defineComponent({
     name:"",
     setup(props ,context) {
         const formRef = ref(null)
 
         const formMode = reactive({
-            name : 'admin',
-            password : '123456',
-            validateNum : '9999'
+            name : '',
+            password : '',
+            validateNum : ''
         })
 
         const formRule = reactive({
@@ -47,8 +49,15 @@ export default defineComponent({
         }
         const handleFormClick = ()=>{
             formRef.value.validate().then(()=>{
+                loadingOpen()
                 http.post('login' ,formMode).then(data=>{
-                    
+                    loadingClose()
+                    messageDialog('登录成功!')
+                }).catch(error=>{
+                    loadingClose()
+                    createCaptcha()
+                    formMode.validateNum = ''
+                    messageDialog(error.message ,'error')
                 })
             })
         }
