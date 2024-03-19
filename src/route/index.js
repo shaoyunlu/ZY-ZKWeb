@@ -1,5 +1,10 @@
 import {createRouter ,createWebHashHistory} from 'vue-router'
 
+/**
+ * zk
+ */
+import frameUserVue from 'page/frame/user/index.vue'
+
 import loginVue from 'page/login/login.vue'
 import indexVue from 'page/index/index.vue'
 
@@ -21,6 +26,10 @@ const routes = [
         path : '/',
         component : indexVue,
         children : [
+            {
+                path : 'frame/user',
+                component : frameUserVue
+            },
             {
                 path: 'account/admin',
                 component: adminVue

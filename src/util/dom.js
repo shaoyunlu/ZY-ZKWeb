@@ -16,10 +16,11 @@ export function loadingClose(){
     loading.close()
 }
 
-export function messageDialog(text='操作成功',type='success'){
+export function messageDialog(text='操作成功',type='success',duration){
     XmvMessage({
         message : text,
-        type : type
+        type : type,
+        duration : duration
     })
 }
 

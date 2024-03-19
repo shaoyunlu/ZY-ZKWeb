@@ -25,15 +25,17 @@ import {defineComponent, onMounted, reactive ,ref} from 'vue'
 import http from 'util/http'
 import {blobHttp} from 'util/http'
 import {loadingOpen,loadingClose,messageDialog} from 'util/dom'
+import {useRouter} from 'vue-router'
 export default defineComponent({
     name:"",
     setup(props ,context) {
+        const router = useRouter()
         const formRef = ref(null)
 
         const formMode = reactive({
-            name : '',
-            password : '',
-            validateNum : ''
+            name : 'admin',
+            password : '123456',
+            validateNum : '9999'
         })
 
         const formRule = reactive({
@@ -52,7 +54,10 @@ export default defineComponent({
                 loadingOpen()
                 http.post('login' ,formMode).then(data=>{
                     loadingClose()
-                    messageDialog('登录成功!')
+                    messageDialog('登录成功，正在为您跳转...','success',2000)
+                    setTimeout(()=>{
+                        router.push('/zk/user')
+                    } ,2000)
                 }).catch(error=>{
                     loadingClose()
                     createCaptcha()

@@ -19,3 +19,20 @@ export function isEmpty(obj ,withZero = false){
       return false
     }
 }
+
+/** 返回一个树形结构  */
+export function tranListToTreeDate(listData, rootValue, idKey, pIdKey) {
+    let list = Object.assign([], listData)
+    const arr = []
+    list.forEach(itemD => {
+        let item = Object.assign({}, itemD)
+        if (item[pIdKey] == rootValue) {
+            const children = tranListToTreeDate(list, item[idKey], idKey, pIdKey)
+            if (children.length) {
+                item.children = children
+            }
+            arr.push(item)
+        }
+    })
+    return arr
+}

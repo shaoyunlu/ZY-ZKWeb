@@ -12,7 +12,7 @@ export default defineComponent({
         const router = useRouter()
 
         onMounted(()=>{
-            router.push('/login')
+            router.push('/frame/user')
         })
         return {}
     }

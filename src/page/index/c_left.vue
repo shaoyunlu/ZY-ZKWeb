@@ -11,6 +11,7 @@
 import {defineComponent ,ref ,onMounted ,nextTick} from 'vue'
 import { useRouter ,useRoute} from 'vue-router';
 import http from 'util/http'
+import {tranListToTreeDate} from 'util/data'
 export default defineComponent({
     name:"",
     setup(props ,context) {
@@ -28,9 +29,15 @@ export default defineComponent({
         onMounted(()=>{
 
             http.get('menu/list').then(data =>{
-                menuData.value = data
+                data.forEach((tmp)=>{
+                    tmp.name = tmp.name
+                    tmp.value = tmp.url
+                })
+                let list = tranListToTreeDate(data, 0, "id", "parent_id")
+                menuData.value = list
 
                 nextTick(()=>{
+                    console.log(menuData.value)
                     menuRef.value.activeNode(route.path)
                 })
             })
