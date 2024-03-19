@@ -51,8 +51,8 @@ export default defineComponent({
                 }
             }).then(data=>{
                 loading.value = false
-                tableData.value = data.list
-                total.value = data.total
+                tableData.value = data.content
+                total.value = data.totalElements
             })
         }
 

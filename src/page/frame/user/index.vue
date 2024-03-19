@@ -9,19 +9,25 @@
         </div>
     </div>
     <div>
-        <zy-table url="zk/user/list" ref="tableRef">
+        <zy-table url="user/list" ref="tableRef">
             <xmv-table-column prop="name" label="用户名" />
-            <xmv-table-column prop="email" label="邮箱" />
+            <xmv-table-column label="角色">
+                <template #default="{props}">
+                    <span>{{ props.data.roles[0].name }}</span>
+                </template>
+            </xmv-table-column>
+            <xmv-table-column prop="updateTime" label="更新时间"></xmv-table-column>
         </zy-table>
     </div>
 </template>
 
 <script>
-import {defineComponent} from 'vue'
+import {defineComponent ,ref} from 'vue'
 export default defineComponent({
     name:"",
     setup(props ,context) {
-        return {}
+        const tableRef = ref(null)
+        return {tableRef}
     }
 })
 </script>

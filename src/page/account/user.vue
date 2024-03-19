@@ -146,7 +146,6 @@ export default defineComponent({
         }
 
         const handleSearch = (val)=>{
-            console.log(val)
             tableRef.value.fetchData()
         }
 
