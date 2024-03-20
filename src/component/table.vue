@@ -46,7 +46,7 @@ export default defineComponent({
             let pageInfo = paginationRef.value.getPageInfo()
             http.get(props.url ,{
                 params : {
-                    pageNum : pageInfo.pageNum,
+                    pageNum : pageInfo.pageNum - 1,
                     pageSize : pageInfo.pageSize
                 }
             }).then(data=>{

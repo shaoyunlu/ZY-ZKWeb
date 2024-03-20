@@ -37,7 +37,6 @@ export default defineComponent({
                 menuData.value = list
 
                 nextTick(()=>{
-                    console.log(menuData.value)
                     menuRef.value.activeNode(route.path)
                 })
             })
