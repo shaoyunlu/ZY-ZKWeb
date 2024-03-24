@@ -6,7 +6,7 @@
             <xmv-button @click="handleBatchDelete">批量删除</xmv-button>
         </div>
         <div class="__right">
-            <xmv-input suffix-icon="search" placeholder="搜索" @iconClick="handleSearch"></xmv-input>
+            <xmv-input suffix-icon="search" placeholder="搜索" @iconClick="handleSearch" ref="searchInputRef"></xmv-input>
         </div>
     </div>
     <!-- 表格 -->
@@ -19,6 +19,11 @@
                 </template>
             </xmv-table-column>
             <xmv-table-column prop="updateTime" label="更新时间"></xmv-table-column>
+            <xmv-table-column prop="" label="操作">
+                <template #default="{props}">
+                    <xmv-button link type="primary" size="small" @click="handleDelete(props.data)">删除</xmv-button>
+                </template>
+            </xmv-table-column>
         </zy-table>
     </div>
 
@@ -34,8 +39,8 @@
             <xmv-form-item label="确认密码" prop="checkPassword">
                 <xmv-input v-model="formMode.checkPassword" type="password"></xmv-input>
             </xmv-form-item>
-            <xmv-form-item label="角色" prop="roles">
-                <xmv-select v-model="formMode.roles">
+            <xmv-form-item label="角色" prop="roleIds">
+                <xmv-select v-model="formMode.roleIds" multiple>
                     <xmv-option v-for="tmp in roleListRef" 
                         :key="tmp.id" 
                         :value="tmp.id" 
@@ -58,7 +63,7 @@
 </template>
 
 <script>
-import {defineComponent ,reactive,ref,onMounted} from 'vue'
+import {defineComponent ,reactive,ref,onMounted, nextTick} from 'vue'
 import {loadingOpen,loadingClose,messageDialog,confirmDialog} from 'util/dom'
 import http from 'util/http'
 export default defineComponent({
@@ -68,39 +73,79 @@ export default defineComponent({
         const dialogFormVisible = ref(null)
         const formRef = ref(null)
         const roleListRef = ref([])
+        const searchInputRef = ref(null)
+
+        const validatePassword = ()=>{
+            return new Promise((resolve ,reject)=>{
+                if (formMode.password == formMode.checkPassword)
+                    resolve()
+                else
+                    reject('密码不一致。')
+            })
+        }
 
         const formMode = reactive({
             name : '',
             password : '',
             checkPassword : '',
             email : '',
-            roles : []
+            roleIds : []
         })
 
         const formRules = reactive({
             name : [{required : true}],
             password : [{required : true}],
-            checkPassword : [{required : true}],
+            checkPassword : [{required : true ,validator : validatePassword}],
             email : [{email : true}],
-            roles : [{required : true}]
+            roleIds : [{required : true}]
         })
+
+        const handleSearch = ()=>{
+            tableRef.value.fetchData({name : searchInputRef.value.getVal()})
+        }
 
         const handleAdd = ()=>{
             dialogFormVisible.value = !dialogFormVisible.value
             if (dialogFormVisible.value){
-
+                formRef.value.reset()
+                ajaxRoleList()
             }
         }
 
         const handleDialogEnter = ()=>{
             formRef.value.validate().then(()=>{
-                
-            }).finally(()=>{
-                console.log('222')
+                ajaxAddUser()
             })
         }
 
-        const fetchRoleList = ()=>{
+        const handleDelete = (rowData)=>{
+            confirmDialog('确认要删除么？',()=>{
+                ajaxDeleteUser(rowData)
+            })
+        }
+
+        const ajaxAddUser = ()=>{
+            loadingOpen()
+            http.post('user/add' ,formMode).then(res=>{
+                dialogFormVisible.value = false
+                messageDialog()
+                tableRef.value.refresh()
+            }).finally(()=>{
+                loadingClose()
+            })
+        }
+
+        const ajaxDeleteUser = (rowData)=>{
+            loadingOpen()
+            http.post('user/delete' ,{id : rowData.id}).then(res=>{
+                messageDialog()
+                tableRef.value.refresh()
+            }).finally(()=>{
+                loadingClose()
+            })
+        }
+
+        const ajaxRoleList = ()=>{
             http.get('role/list' ,{
                 params : {
                     pageNum : 0,
@@ -112,11 +157,12 @@ export default defineComponent({
         }
 
         onMounted(()=>{
-            fetchRoleList()
+            
         })
 
         return {tableRef ,dialogFormVisible ,formMode ,formRules ,formRef ,roleListRef,
-                handleAdd ,handleDialogEnter}
+                searchInputRef,
+                handleAdd ,handleDialogEnter ,handleDelete ,handleSearch}
     }
 })
 </script>

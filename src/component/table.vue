@@ -36,19 +36,24 @@ export default defineComponent({
 
         const pageSizeMode = ref(10)
 
+        let cacheQuery
+
         const handleChangeNumber = ()=>{
             fetchData(false)
         }
 
-        const fetchData = (hidepager = true)=>{
+        const fetchData = (query = {} ,hidepager = true)=>{
+            cacheQuery = query
             hidepager && (total.value = 0)
             loading.value = true
             let pageInfo = paginationRef.value.getPageInfo()
-            http.get(props.url ,{
-                params : {
+            let params = {
                     pageNum : pageInfo.pageNum - 1,
-                    pageSize : pageInfo.pageSize
-                }
+                    pageSize : pageInfo.pageSize,
+            }
+            Object.assign(params,query)
+            http.get(props.url ,{
+                params
             }).then(data=>{
                 loading.value = false
                 tableData.value = data.content
@@ -62,7 +67,7 @@ export default defineComponent({
         }
 
         const refresh = ()=>{
-            fetchData()
+            fetchData(cacheQuery)
         }
 
         onMounted(()=>{
