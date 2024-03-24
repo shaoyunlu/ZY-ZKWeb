@@ -44,7 +44,7 @@ export default defineComponent({
 
         const fetchData = (query = {} ,hidepager = true)=>{
             cacheQuery = query
-            hidepager && (total.value = 0)
+            //hidepager && (total.value = 0)
             loading.value = true
             let pageInfo = paginationRef.value.getPageInfo()
             let params = {
@@ -66,6 +66,16 @@ export default defineComponent({
             return data.filter((tmp=>tmp.checked))
         }
 
+        const sort = (key ,direction)=>{
+            if (!isEmpty(direction)){
+                Object.assign(cacheQuery ,{sortBy : key ,sortDirection : direction})
+            }else{
+                delete cacheQuery.sortBy
+                delete cacheQuery.sortDirection
+            }
+            refresh()
+        }
+
         const refresh = ()=>{
             fetchData(cacheQuery)
         }
@@ -78,7 +88,7 @@ export default defineComponent({
 
         return {pageSizeMode,total,tableData,paginationRef,loading,
                 xmvTableRef,tableRef,
-                handleChangeNumber,refresh,fetchData,getSelectedData}
+                handleChangeNumber,refresh,fetchData,getSelectedData,sort}
     }
 })
 </script>

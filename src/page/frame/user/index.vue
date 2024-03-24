@@ -12,33 +12,42 @@
     <!-- 表格 -->
     <div>
         <zy-table url="user/list" ref="tableRef">
-            <xmv-table-column prop="name" label="用户名" />
+            <xmv-table-column prop="name" label="用户名" sortable :sort-method="handleSort"/>
+            <xmv-table-column prop="realName" label="真实姓名" />
             <xmv-table-column label="角色">
                 <template #default="{props}">
-                    <span>{{ props.data.roles[0].name }}</span>
+                    <span>{{ props.data.roles.map(t=>t.name).join(",") }}</span>
                 </template>
             </xmv-table-column>
             <xmv-table-column prop="updateTime" label="更新时间"></xmv-table-column>
             <xmv-table-column prop="" label="操作">
                 <template #default="{props}">
-                    <xmv-button link type="primary" size="small" @click="handleDelete(props.data)">删除</xmv-button>
+                    <div v-if="props.data.name != 'admin'">
+                        <xmv-button link type="primary" size="small" @click="handleUpdate(props.data)">修改</xmv-button>
+                        <xmv-button link type="primary" size="small" @click="handleDelete(props.data)">删除</xmv-button>
+                    </div>
                 </template>
             </xmv-table-column>
         </zy-table>
     </div>
 
-    <!--  表单 -->
-    <xmv-dialog v-model="dialogFormVisible" title="用户信息" width="500px">
+    <!-- 表单 -->
+    <xmv-dialog v-model="dialogFormVisible" title="用户新增" width="500px">
         <xmv-form ref="formRef" label-width="100px" :mode="formMode" :rules="formRules" class="zy-dialog-form">
             <xmv-form-item label="用户名" prop="name">
                 <xmv-input v-model="formMode.name" />
             </xmv-form-item>
-            <xmv-form-item label="密码" prop="password">
-                <xmv-input v-model="formMode.password" type="password"></xmv-input>
+            <xmv-form-item label="真实姓名" prop="realName">
+                <xmv-input v-model="formMode.realName" />
             </xmv-form-item>
-            <xmv-form-item label="确认密码" prop="checkPassword">
-                <xmv-input v-model="formMode.checkPassword" type="password"></xmv-input>
-            </xmv-form-item>
+            <div v-if="isAddRef">
+                <xmv-form-item label="密码" prop="password">
+                    <xmv-input v-model="formMode.password" type="password"></xmv-input>
+                </xmv-form-item>
+                <xmv-form-item label="确认密码" prop="checkPassword">
+                    <xmv-input v-model="formMode.checkPassword" type="password"></xmv-input>
+                </xmv-form-item>
+            </div>
             <xmv-form-item label="角色" prop="roleIds">
                 <xmv-select v-model="formMode.roleIds" multiple>
                     <xmv-option v-for="tmp in roleListRef" 
@@ -60,6 +69,7 @@
             </span>
         </template>
     </xmv-dialog>
+
 </template>
 
 <script>
@@ -74,6 +84,7 @@ export default defineComponent({
         const formRef = ref(null)
         const roleListRef = ref([])
         const searchInputRef = ref(null)
+        const isAddRef = ref(false)
 
         const validatePassword = ()=>{
             return new Promise((resolve ,reject)=>{
@@ -85,7 +96,9 @@ export default defineComponent({
         }
 
         const formMode = reactive({
+            id : '',
             name : '',
+            realName : '',
             password : '',
             checkPassword : '',
             email : '',
@@ -94,6 +107,7 @@ export default defineComponent({
 
         const formRules = reactive({
             name : [{required : true}],
+            realName : [{required : true}],
             password : [{required : true}],
             checkPassword : [{required : true ,validator : validatePassword}],
             email : [{email : true}],
@@ -104,7 +118,10 @@ export default defineComponent({
             tableRef.value.fetchData({name : searchInputRef.value.getVal()})
         }
 
-        const handleAdd = ()=>{
+        const  handleAdd = async ()=>{
+            isAddRef.value = true
+            formRules.password = [{required : true}]
+            formRules.checkPassword = [{required : true ,validator : validatePassword}]
             dialogFormVisible.value = !dialogFormVisible.value
             if (dialogFormVisible.value){
                 formRef.value.reset()
@@ -112,9 +129,34 @@ export default defineComponent({
             }
         }
 
+        const handleUpdate = async (rowData)=>{
+            isAddRef.value = false
+            formRules.password = []
+            formRules.checkPassword = []
+            dialogFormVisible.value = !dialogFormVisible.value
+            if (dialogFormVisible.value){
+                formRef.value.reset()
+                await ajaxRoleList()
+                formMode.id = rowData.id
+                formMode.name = rowData.name
+                formMode.realName = rowData.realName
+                formMode.email = rowData.email
+                formMode.roleIds = rowData.roles.map(t=>t.id)
+            }
+        }
+
+        const handleSort = (key ,sortStr)=>{
+            tableRef.value.sort(key ,sortStr)
+        }
+
         const handleDialogEnter = ()=>{
             formRef.value.validate().then(()=>{
-                ajaxAddUser()
+                if (isAddRef.value){
+                    ajaxAddUser()
+                }else{
+                    ajaxUpdateUser()
+                }
+                
             })
         }
 
@@ -135,6 +177,17 @@ export default defineComponent({
             })
         }
 
+        const ajaxUpdateUser = ()=>{
+            loadingOpen()
+            http.post('user/update' ,formMode).then(res=>{
+                dialogFormVisible.value = false
+                messageDialog()
+                tableRef.value.refresh()
+            }).finally(()=>{
+                loadingClose()
+            })
+        }
+
         const ajaxDeleteUser = (rowData)=>{
             loadingOpen()
             http.post('user/delete' ,{id : rowData.id}).then(res=>{
@@ -145,14 +198,19 @@ export default defineComponent({
             })
         }
 
-        const ajaxRoleList = ()=>{
-            http.get('role/list' ,{
-                params : {
-                    pageNum : 0,
-                    pageSize : 9999
-                }
-            }).then(data=>{
-                roleListRef.value = data.content
+        const ajaxRoleList =  ()=>{
+            return new Promise((resolve,reject)=>{
+                http.get('role/list' ,{
+                    params : {
+                        pageNum : 0,
+                        pageSize : 9999
+                    }
+                }).then(data=>{
+                    roleListRef.value = data.content
+                    resolve()
+                }).catch(()=>{
+                    reject()
+                })
             })
         }
 
@@ -161,8 +219,8 @@ export default defineComponent({
         })
 
         return {tableRef ,dialogFormVisible ,formMode ,formRules ,formRef ,roleListRef,
-                searchInputRef,
-                handleAdd ,handleDialogEnter ,handleDelete ,handleSearch}
+                searchInputRef,isAddRef,
+                handleAdd ,handleDialogEnter ,handleDelete ,handleSearch,handleUpdate,handleSort}
     }
 })
 </script>
