@@ -8,7 +8,6 @@ import './style/index.less'
 import router from './route'
 
 import zyTable from 'comp/table.vue'
-import zySelect from 'comp/select.vue'
 
 // 需要注册几个常用的组件
 
@@ -18,5 +17,4 @@ app.use(register)
 app.mount('#app')
 
 app.component('zyTable', zyTable)
-app.component('zySelect', zySelect)
 

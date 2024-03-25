@@ -5,6 +5,7 @@ import {createRouter ,createWebHashHistory} from 'vue-router'
  */
 import frameUserVue from 'page/frame/user/index.vue'
 
+
 import loginVue from 'page/login/login.vue'
 import indexVue from 'page/index/index.vue'
 

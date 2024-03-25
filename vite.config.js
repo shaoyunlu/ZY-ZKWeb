@@ -11,7 +11,8 @@ export default defineConfig({
       'page': resolve(__dirname, 'src/page'),
       'comp': resolve(__dirname, 'src/component'),
       'util': resolve(__dirname, 'src/util'),
-      'style': resolve(__dirname, 'src/style')
+      'style': resolve(__dirname, 'src/style'),
+      'data': resolve(__dirname, 'src/data')
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
   },

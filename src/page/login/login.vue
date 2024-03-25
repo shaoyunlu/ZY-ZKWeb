@@ -12,9 +12,10 @@
                     <xmv-input v-model="formMode.validateNum"></xmv-input>
                     <img style="width: 125px; height: 32px;margin-left: 10px;" :src="srcRef" @click="handleImgClick"/>
                 </xmv-form-item>
-                <xmv-form-item label=" ">
+                
+                <div class="__button">
                     <xmv-button type="primary" @click="handleFormClick">提交</xmv-button>
-                </xmv-form-item>
+                </div>
             </xmv-form>
         </div>
     </div>
@@ -26,16 +27,19 @@ import http from 'util/http'
 import {blobHttp} from 'util/http'
 import {loadingOpen,loadingClose,messageDialog} from 'util/dom'
 import {useRouter} from 'vue-router'
+import {setUser} from 'data/runtime'
 export default defineComponent({
     name:"",
     setup(props ,context) {
         const router = useRouter()
         const formRef = ref(null)
 
+        const srcRef = ref('')
+
         const formMode = reactive({
-            name : 'admin',
-            password : '123456',
-            validateNum : '9999'
+            name : '',
+            password : '',
+            validateNum : ''
         })
 
         const formRule = reactive({
@@ -44,8 +48,6 @@ export default defineComponent({
             validateNum : [{required : true}]
         })
 
-
-        const srcRef = ref('')
         const handleImgClick = ()=>{
             createCaptcha()
         }
@@ -53,16 +55,17 @@ export default defineComponent({
             formRef.value.validate().then(()=>{
                 loadingOpen()
                 http.post('login' ,formMode).then(data=>{
-                    loadingClose()
+                    setUser(data)
                     messageDialog('登录成功，正在为您跳转...','success',2000)
                     setTimeout(()=>{
-                        router.push('/zk/user')
+                        router.push('/frame/user')
                     } ,2000)
                 }).catch(error=>{
-                    loadingClose()
                     createCaptcha()
                     formMode.validateNum = ''
                     messageDialog(error.message ,'error')
+                }).finally(()=>{
+                    loadingClose()
                 })
             })
         }
@@ -105,6 +108,10 @@ export default defineComponent({
             content: "";
             color: var(--xmv-color-danger);
             margin-right: 4px;
+        }
+
+        .__button{
+            padding-left: 100px;
         }
     }
 </style>
