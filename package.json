@@ -23,7 +23,7 @@
     "vue-router": "^4.2.2",
     "vuedraggable": "^4.1.0",
     "xiaomeng-dom-util": "^1.0.9",
-    "xiaomeng-vue-ui": "^0.2.79"
+    "xiaomeng-vue-ui": "^0.2.83"
   },
   "devDependencies": {
     "@vitejs/plugin-legacy": "^4.0.2",

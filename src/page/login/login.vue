@@ -14,7 +14,7 @@
                 </xmv-form-item>
                 
                 <div class="__button">
-                    <xmv-button type="primary" @click="handleFormClick">提交</xmv-button>
+                    <xmv-button type="primary" @click="handleFormClick" :disabled="buttonDisabledRef">提交</xmv-button>
                 </div>
             </xmv-form>
         </div>
@@ -33,13 +33,14 @@ export default defineComponent({
     setup(props ,context) {
         const router = useRouter()
         const formRef = ref(null)
+        const buttonDisabledRef = ref(false)
 
         const srcRef = ref('')
 
         const formMode = reactive({
-            name : '',
-            password : '',
-            validateNum : ''
+            name : 'admin',
+            password : 'syl118100',
+            validateNum : '9999'
         })
 
         const formRule = reactive({
@@ -55,8 +56,9 @@ export default defineComponent({
             formRef.value.validate().then(()=>{
                 loadingOpen()
                 http.post('login' ,formMode).then(data=>{
-                    setUser(data)
                     messageDialog('登录成功，正在为您跳转...','success',2000)
+                    buttonDisabledRef.value = true
+                    setUser(data)
                     setTimeout(()=>{
                         router.push('/frame/user')
                     } ,2000)
@@ -81,7 +83,7 @@ export default defineComponent({
             createCaptcha()
         })
 
-        return {formRef ,formMode ,formRule ,srcRef ,
+        return {formRef ,formMode ,formRule ,srcRef ,buttonDisabledRef,
                 handleImgClick ,handleFormClick}
     }
 })

@@ -12,6 +12,7 @@
     <!-- 表格 -->
     <div>
         <zy-table url="user/list" ref="tableRef">
+            <xmv-table-column type="checkbox" width="55" />
             <xmv-table-column prop="name" label="用户名" sortable :sort-method="handleSort"/>
             <xmv-table-column prop="realName" label="真实姓名" />
             <xmv-table-column label="角色">
@@ -166,6 +167,18 @@ export default defineComponent({
             })
         }
 
+        const handleBatchDelete = ()=>{
+            let data = tableRef.value.getSelectedData()
+            if (data.length == 0){
+                messageDialog('请至少选择一条记录。' ,'info')
+            }else{
+                confirmDialog('确认要删除么？',()=>{
+                    let idList = data.map(tmp=>tmp.id)
+                    ajaxBatchDeleteUser(idList)
+                })
+            }
+        }
+
         const ajaxAddUser = ()=>{
             loadingOpen()
             http.post('user/add' ,formMode).then(res=>{
@@ -198,6 +211,16 @@ export default defineComponent({
             })
         }
 
+        const ajaxBatchDeleteUser = (idList)=>{
+            loadingOpen()
+            http.post('user/delete/batch' ,idList).then(res=>{
+                messageDialog()
+                tableRef.value.refresh()
+            }).finally(()=>{
+                loadingClose()
+            })
+        }
+
         const ajaxRoleList =  ()=>{
             return new Promise((resolve,reject)=>{
                 http.get('role/list' ,{
@@ -220,7 +243,8 @@ export default defineComponent({
 
         return {tableRef ,dialogFormVisible ,formMode ,formRules ,formRef ,roleListRef,
                 searchInputRef,isAddRef,
-                handleAdd ,handleDialogEnter ,handleDelete ,handleSearch,handleUpdate,handleSort}
+                handleAdd ,handleDialogEnter ,handleDelete ,handleSearch,handleUpdate,handleSort,
+                handleBatchDelete}
     }
 })
 </script>

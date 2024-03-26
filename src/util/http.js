@@ -1,5 +1,8 @@
 // 引入axios
 import axios from 'axios';
+import {useRouter} from 'vue-router'
+
+const router = useRouter()
 
 // 创建axios实例
 const http = axios.create({
@@ -45,7 +48,10 @@ http.interceptors.response.use(
   error => {
     // 任何超出2xx范围的状态码都会触发此函数
     // 对响应错误做点什么
-    console.error('请求出错:', error);
+    console.log('请求出错:', error);
+    if (error.response.status == '401'){
+        window.location.href = '#/login'
+    }
     return Promise.reject(error);
   }
 );

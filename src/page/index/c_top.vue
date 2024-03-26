@@ -7,8 +7,8 @@
                 </div>
                 <template #dropdown>
                     <xmv-dropdown-menu>
-                        <xmv-dropdown-item>修改密码</xmv-dropdown-item>
-                        <xmv-dropdown-item>退出</xmv-dropdown-item>
+                        <xmv-dropdown-item item-value="1">修改密码</xmv-dropdown-item>
+                        <xmv-dropdown-item item-value="2" @click="handleExit">退出</xmv-dropdown-item>
                     </xmv-dropdown-menu>
                 </template>
             </xmv-dropdown>
@@ -19,16 +19,38 @@
 
 <script>
 import {defineComponent} from 'vue'
+import {useRouter} from 'vue-router'
 import {g_user} from 'data/runtime'
+import {confirmDialog} from 'util/dom'
+import http from 'util/http'
 export default defineComponent({
     name:"",
     setup(props ,context) {
 
-        const handleItemClick = ()=>{
+        const router = useRouter()
 
+        const handleItemClick = (val)=>{
+            switch (val) {
+                case "1":
+                    handleUpdatePassword()
+                    break;
+                case "2":
+                    handleExit()
+                    break;
+                default:
+                    break;
+            }
         }
 
-        return {g_user ,handleItemClick}
+        const handleExit = ()=>{
+            confirmDialog('确认要退出么？' ,()=>{
+                http.post('/logout').then(res=>{
+                    router.push('/login')
+                })
+            })
+        }
+
+        return {g_user ,handleItemClick,handleExit}
     }
 })
 </script>
